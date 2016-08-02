@@ -82,7 +82,7 @@ module.exports = function(req, res) {
     }
 
     html += '<h5>' + response.body.desc + '</h5>';
-    html += '<p style="text-align: right; font-size: 0.7em">trello.com</p>';
+    html += '<p style="text-align: right; font-size: 0.7em"><a href ="' + url + '">trello.com</a></p>';
     html += '</div>';
 
     html += '</td> </tr> </tbody> </table>';
