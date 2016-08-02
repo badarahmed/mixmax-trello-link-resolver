@@ -1,0 +1,5 @@
+localhost {
+	proxy / localhost:9146
+	tls self_signed
+	log stdout
+}
