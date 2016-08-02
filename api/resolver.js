@@ -15,6 +15,7 @@ module.exports = function(req, res) {
   try {
     console.log(url + '.json');
 
+    // Hit Trello API
     response = sync.await(request({
       url: url + '.json?key=' + process.env.TRELLO_API_KEY,
       timeout: 15 * 1000,
@@ -25,9 +26,11 @@ module.exports = function(req, res) {
     return;
   }
 
+  // Format HTML output for link preview
   try {
-    var html = '<style>.card-label{color: white; font-size: 0.7em; border-radius:3px;-moz-box-sizing:border-box;box-sizing:border-box;display:block;float:left;height:30px;line-height:30px;margin:0 4px 4px 0;min-width:40px;padding:0 10px;width:auto;}  .card-label-green{background-color:#61bd4f}.card-label-yellow{background-color:#f2d600}.card-label-orange{background-color:#ffab4a}.card-label-red{background-color:#eb5a46} .card-label-purple{background-color:#c377e0} .card-label-blue{background-color:#0079bf} .card-label-pink{background-color:#ff80ce}.card-label-sky{background-color:#00c2e0}.card-label-lime{background-color:#51e898}.card-label-black{background-color:#4d4d4d}</style>';
-    html += '<table id="" class="card-v3" cellpadding="0" cellspacing="0" style="border:1px solid #f5ffff; border-radius:4px; width:100%; max-width:578px; mso-border-alt: none;">';
+    var labelStyle = 'color: white; font-size: 0.7em; border-radius:3px;-moz-box-sizing:border-box;box-sizing:border-box;display:block;float:left;height:30px;line-height:30px;margin:0 4px 4px 0;min-width:40px;padding:0 10px;width:auto; ';
+
+    var html = '<table id="" class="card-v3" cellpadding="0" cellspacing="0" style="border:1px solid #f5ffff; border-radius:4px; width:100%; max-width:578px; mso-border-alt: none;">';
     html += '<tbody><tr style="border:1px solid #d5ecff; mso-border-alt:none; display:block; border-radius: 3px;">';
     html += '<td style="display:block; padding:8px; border-radius:2px; border:1px solid #99b0e1; vertical-align:top; background-color:white; mso-border-alt:none;">';
 
@@ -36,7 +39,44 @@ module.exports = function(req, res) {
 
     if (response.body.labels && response.body.labels.length > 0) {
       for (label of response.body.labels) {
-        html += '<div class="card-label card-label-' + label.color + '">&nbsp;' + label.name + '</div>';
+
+        var color;
+
+        // Use Trello color palette for labels
+        switch (label.color) {
+          case "green":
+            color = "#61bd4f";
+            break;
+          case "yellow":
+            color = "#f2d600";
+            break;
+          case "orange":
+            color = "#ffab4a";
+            break;
+          case "red":
+            color = "#eb5a46";
+            break;
+          case "purple":
+            color = "#c377e0";
+            break;
+          case "blue":
+            color = "#0079bf";
+            break;
+          case "pink":
+            color = "#ff80ce";
+            break;
+          case "sky":
+            color = "#00c2e0";
+            break;
+          case "lime":
+            color = "#51e898";
+            break;
+          case "black":
+            color = "#4d4d4d";
+            break;
+        }
+
+        html += '<div style="' + labelStyle + 'background-color: ' + color + ';">&nbsp;' + label.name + '</div>';
       }
       html += '<br/>';
     }
